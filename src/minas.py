@@ -54,9 +54,6 @@ el número total de minas adyacentes que tiene la celda.
 - Consejo 5: Comprueba por qué no funciona la función jugar()... yo que tú empezaba a depurar.
 
 """
-
-import random
-
 # Acciones del jugador
 MARCAR = "M"
 REVELAR = "R"
