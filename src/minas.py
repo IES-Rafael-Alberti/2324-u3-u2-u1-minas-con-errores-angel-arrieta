@@ -260,10 +260,9 @@ def revelar_alrededor(tablero, fila, columna) -> list:
     return tablero
 
 
-def marcar_celda(tablero, celdas_marcadas, fila, columna) -> tuple:
+def marcar_celda(celdas_marcadas, fila, columna) -> tuple:
     """
     Esta función marca la celda seleccionada con una bandera.
-    :param tablero: tablero de juego
     :param celdas_marcadas: conjunto de celdas que han sido marcadas con una bandera
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
@@ -273,20 +272,20 @@ def marcar_celda(tablero, celdas_marcadas, fila, columna) -> tuple:
         celdas_marcadas.add((fila, columna))
     else:
         celdas_marcadas.discard((fila, columna))
-    return tablero, celdas_marcadas
+    return celdas_marcadas
 
 
-def verificar_victoria(tablero, celdas_reveladas) -> bool:
+def verificar_victoria(ancho: int, cantidad_reveladas: int) -> bool:
     """
     Esta función verifica si el jugador ha ganado el juego. Que se daŕa solo y solo si todas las celdas que no contienen
     minas han sido reveladas.
-    :param tablero: tablero de juego
-    :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
+    :param ancho: ancho del tablero de juego
+    :param cantidad_reveladas: cantidad de celdas que ya han sido mostradas al jugador
     :return: True si el jugador ha ganado, False de lo contrario
     """
     victoria = False
-    celdas_vacias = (len(tablero) ** 2) - NUMERO_MINAS
-    if len(celdas_reveladas) == celdas_vacias:
+    celdas_vacias = (ancho ** 2) - NUMERO_MINAS
+    if cantidad_reveladas == celdas_vacias:
         victoria = True
     return victoria
 
@@ -312,12 +311,12 @@ def jugar():
                 print("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Oh no! ¡Has pisado una mina!!!!!!!!!!!!!!!!!!!!!")
                 print(imprimir_tablero(tablero))
                 terminar_juego = True
-            if verificar_victoria(tablero, celdas_reveladas) is True:
+            if verificar_victoria(len(tablero), len(celdas_reveladas)) is True:
                 print("¡Felicidades! ¡Has ganado el juego!")
                 print(imprimir_tablero(tablero))
                 terminar_juego = True
         elif accion == "M":
-            tablero, celdas_marcadas = marcar_celda(tablero, celdas_marcadas, fila, columna)
+            celdas_marcadas = marcar_celda(celdas_marcadas, fila, columna)
 
 
 if __name__ == "__main__":
