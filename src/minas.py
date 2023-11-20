@@ -72,7 +72,7 @@ BANDERA = "F"
 def generar_tablero() -> list:
     """
     Esta función genera un tablero de juego vacío y coloca las minas en el tablero. Luego, calcula el número de minas adyacentes a cada celda.
-    :return: tablero de juego
+    :return tablero: matriz que actua como tablero de juego del busca minas
     """
     tablero = [[VACIO for _ in range(COLUMNAS)] for _ in range(FILAS)]
     # TODO: colocar las minas en el tablero
@@ -83,6 +83,9 @@ def generar_tablero() -> list:
 def colocar_minas(tablero: list, cantidad_minas: int) -> list:
     """
     Esta función coloca las minas en el tablero de juego. Se asegura de que el número de minas colocadas sea igual a NUMERO_MINAS.
+    :param tablero: tablero de juego
+    :param cantidad_minas: minas que se quieren colocar en el tablero
+    :return tablero: tablero con las minas colocadas
     """
     import random
     posicion_minas = list()
@@ -108,7 +111,7 @@ def contar_minas_adyacentes(tablero, fila, columna):
     :param tablero: tablero de juego
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
-    :return: número de minas adyacentes a la celda(i,j) seleccionada
+    :return conteo_minas: número de minas adyacentes a la celda(i,j) seleccionada
     """
     conteo_minas = 0
     for i in range(-1, 2):
@@ -124,7 +127,7 @@ def imprimir_tablero(tablero: list) -> str:
     """
     Esta función toma el tablero como argumento e imprime cada celda del tablero.
     :param tablero: tablero de juego
-
+    :return impresion_tablero: dibujo del tablero de juego
     """
     impresion_tablero = "   1 2 3 4 5 6 7 8\n"
     cantidad_filas_y_columnas = len(tablero)
@@ -138,6 +141,8 @@ def imprimir_tablero_oculto(tablero, celdas_marcadas):
     """
     Imprime cada celda del tablero: si la celda ha sido revelada o marcada con una bandera, muestra su contenido actual (número, vacio_revelado o bandera); si no, muestra la celda como vacía.
     :param tablero: tablero de juego
+    :param celdas_marcadas: celdas con banderas puestas
+    :return impresion_oculta: dibujo del tablero sin las minas
     """
     tablero_oculto = list()
     for fila in tablero:
@@ -184,11 +189,10 @@ def revelar_celda(tablero, celdas_reveladas, fila, columna) -> tuple:
     Si la celda no contiene una mina, se agrega a celdas_reveladas y devuelve True.
     :param tablero: tablero de juego
     :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
-    :param celdas_marcadas: conjunto de celdas que han sido marcadas con una bandera
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
-    :return: False si la celda contiene una mina, True en caso contrario
-
+    :return tuple: (celdas_reveladas, tablero, booleano)
+            booleano: False si la celda contiene una mina, True en caso contrario
     """
     if tablero[fila][columna] == MINA:  # La celda contiene una mina
         return celdas_reveladas, tablero, False
@@ -216,6 +220,12 @@ def revelar_celdas_vacias(tablero, celdas_reveladas, fila, columna):
 
 
 def contar_celdas_reveladas(tablero: list, celdas_reveladas: set) -> set:
+    """
+    Esta función recoge todas las celdas que han sido reveladas y almacena sus posiciones en un conjunto
+    :param tablero: tablero de juego
+    :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
+    :return celdas_reveladas
+    """
     import re
     for fila in range(len(tablero)):
         for columna in range(len(tablero)):
@@ -225,6 +235,13 @@ def contar_celdas_reveladas(tablero: list, celdas_reveladas: set) -> set:
 
 
 def revelar_alrededor(tablero, fila, columna) -> list:
+    """
+    Esta función revela las celdas circundantes de una celda que no tiene minas alrededor
+    :param tablero: tablero de juego
+    :param fila: fila de la celda ya revelada
+    :param columna: columna de la celda ya revelada
+    :return tablero:
+    """
     celdas = set()
     for i in range(-1, 2):
         for j in range(-1, 2):
@@ -237,13 +254,14 @@ def revelar_alrededor(tablero, fila, columna) -> list:
     return tablero
 
 
-def marcar_celda(tablero, celdas_marcadas, fila, columna):
+def marcar_celda(tablero, celdas_marcadas, fila, columna) -> tuple:
     """
     Esta función marca la celda seleccionada con una bandera.
     :param tablero: tablero de juego
     :param celdas_marcadas: conjunto de celdas que han sido marcadas con una bandera
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
+    :return tuple: (tablero, celdas_marcadas)
     """
     if (fila, columna) not in celdas_marcadas:
         celdas_marcadas.add((fila, columna))
@@ -255,7 +273,7 @@ def marcar_celda(tablero, celdas_marcadas, fila, columna):
 def verificar_victoria(tablero, celdas_reveladas) -> bool:
     """
     Esta función verifica si el jugador ha ganado el juego. Que se daŕa solo y solo si todas las celdas que no contienen
-     minas han sido reveladas.
+    minas han sido reveladas.
     :param tablero: tablero de juego
     :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
     :return: True si el jugador ha ganado, False de lo contrario
@@ -268,7 +286,9 @@ def verificar_victoria(tablero, celdas_reveladas) -> bool:
 
 
 def jugar():
-
+    """
+    Función que llama al juego y ejecuta su bucle principal
+    """
     tablero = generar_tablero()
     celdas_reveladas = set()
     celdas_marcadas = set()
