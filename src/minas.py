@@ -143,10 +143,11 @@ def imprimir_tablero(tablero: list) -> str:
     return impresion_tablero
 
 
-def imprimir_tablero_oculto(tablero):
+def imprimir_tablero_oculto(tablero, celdas_marcadas):
     """
     Imprime cada celda del tablero: si la celda ha sido revelada o marcada con una bandera, muestra su contenido actual (número, vacio_revelado o bandera); si no, muestra la celda como vacía.
     :param tablero: tablero de juego
+    :param celdas_marcadas: celdas con banderas puestas
     :return impresion_oculta: dibujo del tablero sin las minas
     """
     tablero_oculto = list()
@@ -158,6 +159,8 @@ def imprimir_tablero_oculto(tablero):
             else:
                 fila_oculta.append(celda)
         tablero_oculto.append(fila_oculta)
+    for banderola in celdas_marcadas:
+        tablero_oculto[banderola[0]][banderola[1]] = BANDERA
 
     impresion_oculta = imprimir_tablero(tablero_oculto)
     return impresion_oculta
@@ -299,7 +302,7 @@ def jugar():
 
     while terminar_juego is False:
 
-        print(imprimir_tablero_oculto(tablero))
+        print(imprimir_tablero_oculto(tablero, celdas_marcadas))
         accion, fila, columna = pedir_accion()
 
         if accion == "R":
