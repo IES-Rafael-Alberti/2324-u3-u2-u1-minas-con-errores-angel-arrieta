@@ -89,17 +89,17 @@ def colocar_minas(tablero: list, cantidad_minas: int) -> list:
     Esta función coloca las minas en el tablero de juego. Se asegura de que el número de minas colocadas sea igual a NUMERO_MINAS.
     """
     import random
-    posicion_minas = set()
+    posicion_minas = list()
     for i in range(cantidad_minas):
         seguir = "no"
         while seguir == "no":
             fila = random.randint(0, 7)
             columna = random.randint(0, 7)
             posicion = [fila, columna]
-            if posicion in posicion_minas is True:
+            if posicion_minas.count(posicion) > 0:
                 seguir = "no"
             else:
-                posicion_minas.add(posicion)
+                posicion_minas.append(posicion)
                 seguir = "si"
     for mina in posicion_minas:
         tablero[mina[0]][mina[1]] = MINA
@@ -115,15 +115,12 @@ def contar_minas_adyacentes(tablero, fila, columna):
     :return: número de minas adyacentes a la celda(i,j) seleccionada
     """
     conteo_minas = 0
-    celdas_alrededor = set()
     for i in range(-1, 2):
         for j in range(-1, 2):
             if 0 <= fila + i < FILAS and 0 <= columna + j < COLUMNAS:
                 if (i, j) != (0, 0):
-                    celdas_alrededor.add(tablero[fila + i][columna + j])
-    for celda in celdas_alrededor:
-        if celda == MINA:
-            conteo_minas += 1
+                    if tablero[fila + i][columna + j] == MINA:
+                        conteo_minas += 1
     return conteo_minas
 
 
@@ -141,7 +138,7 @@ def imprimir_tablero(tablero: list) -> str:
     return impresion_tablero[:-1]
 
 
-def imprimir_tablero_oculto(tablero):
+def imprimir_tablero_oculto(tablero, celdas_marcadas):
     """
     Imprime cada celda del tablero: si la celda ha sido revelada o marcada con una bandera, muestra su contenido actual (número, vacio_revelado o bandera); si no, muestra la celda como vacía.
     :param tablero: tablero de juego
@@ -155,6 +152,8 @@ def imprimir_tablero_oculto(tablero):
             else:
                 fila_oculta.append(celda)
         tablero_oculto.append(fila_oculta)
+    for banderola in celdas_marcadas:
+        tablero_oculto[banderola[0]][banderola[1]] = BANDERA
 
     impresion_oculta = imprimir_tablero(tablero_oculto)
     return impresion_oculta
@@ -182,7 +181,7 @@ def pedir_accion():
     return accion, fila, columna
 
 
-def revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna) -> bool:
+def revelar_celda(tablero, celdas_reveladas, fila, columna) -> tuple:
     """
     Esta función revela la celda seleccionada.
     Si la celda contiene una mina, devuelve False.
@@ -196,33 +195,50 @@ def revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna) -> 
 
     """
     if tablero[fila][columna] == MINA:  # La celda contiene una mina
-        return False
-    elif tablero[fila][columna] != VACIO:  # La celda contiene un número
-        celdas_reveladas.add((fila, columna))
-        celdas_marcadas.discard((fila, columna))
-    else:  # La celda está vacía
-        revelar_celdas_vacias(tablero, celdas_reveladas, celdas_marcadas, fila, columna)
+        return celdas_reveladas, tablero, False
+    else:  # La celda no tiene mina
+        celdas_reveladas, tablero = revelar_celdas_vacias(tablero, celdas_reveladas, fila, columna)
+        return celdas_reveladas, tablero, True
 
 
-def revelar_celdas_vacias(tablero, celdas_reveladas, celdas_marcadas, fila, columna):
+def revelar_celdas_vacias(tablero, celdas_reveladas, fila, columna):
     """
     Esta función revela la celda seleccionada. Si está vacía, revela recursivamente las celdas vacías adyacentes a la celda seleccionada.
     :param tablero: tablero de juego
     :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
-    :param celdas_marcadas: conjunto de celdas que han sido marcadas con una bandera
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
     """
-    if (fila, columna) not in celdas_reveladas:
+    if (fila, columna) not in celdas_reveladas:  # Si la celda no ha sido revelada
         celdas_reveladas.add((fila, columna))
-        celdas_marcadas.discard((fila, columna))
-        # Si la celda esta vacía, revela también las celdas adyacentes
-        if tablero[fila][columna] == VACIO:
-            # Recursivamente revela las celdas adyacentes
-            for i in range(-1, 2):
-                for j in range(-1, 2):
-                    if 0 <= fila + i < FILAS and 0 <= columna + j < COLUMNAS:
-                        revelar_celdas_vacias(tablero, celdas_reveladas, celdas_marcadas, fila + i, columna + j)
+        minas_alrededor = contar_minas_adyacentes(tablero, fila, columna)
+        tablero[fila][columna] = f"{minas_alrededor}"
+        if minas_alrededor == 0:
+            tablero = revelar_alrededor(tablero, fila, columna)
+        celdas_reveladas = contar_celdas_reveladas(tablero, celdas_reveladas)
+    return celdas_reveladas, tablero
+
+
+def contar_celdas_reveladas(tablero: list, celdas_reveladas: set) -> set:
+    import re
+    for fila in range(len(tablero)):
+        for columna in range(len(tablero)):
+            if re.search("^[0-7]$", tablero[fila][columna]) is not None:
+                celdas_reveladas.add((fila, columna))
+    return celdas_reveladas
+
+
+def revelar_alrededor(tablero, fila, columna) -> list:
+    celdas = set()
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            if 0 <= fila + i < FILAS and 0 <= columna + j < COLUMNAS:
+                if (i, j) != (0, 0):
+                    celdas.add((fila + i, columna + j))
+    for lugar in celdas:
+        cantidad_minas = contar_minas_adyacentes(tablero, lugar[0], lugar[1])
+        tablero[lugar[0]][lugar[1]] = f"{cantidad_minas}"
+    return tablero
 
 
 def marcar_celda(tablero, celdas_marcadas, fila, columna):
@@ -233,8 +249,11 @@ def marcar_celda(tablero, celdas_marcadas, fila, columna):
     :param fila: fila de la celda seleccionada
     :param columna: columna de la celda seleccionada
     """
-    if (columna, fila) in celdas_marcadas:
-        celdas_marcadas.add((columna, fila))
+    if (fila, columna) not in celdas_marcadas:
+        celdas_marcadas.add((fila, columna))
+    else:
+        celdas_marcadas.discard((fila, columna))
+    return tablero, celdas_marcadas
 
 
 def verificar_victoria(tablero, celdas_reveladas) -> bool:
@@ -245,43 +264,39 @@ def verificar_victoria(tablero, celdas_reveladas) -> bool:
     :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
     :return: True si el jugador ha ganado, False de lo contrario
     """
-    victoria = True
-
-    for fila in range(FILAS):
-        for columna in range(COLUMNAS):
-            if tablero[fila][columna] != MINA and (fila, columna) not in celdas_reveladas:
-                victoria = False
+    victoria = False
+    celdas_vacias = (len(tablero) ** 2) - NUMERO_MINAS
+    if len(celdas_reveladas) == celdas_vacias:
+        victoria = True
     return victoria
 
 
 def jugar():
-    """
-    Esta función ejecuta el juego. Primero genera un tablero de juego, luego pide al jugador que ingrese una acción, una fila y una columna. Luego, revela la celda seleccionada y verifica si el jugador ha ganado o perdido el juego. Si el jugador ha ganado o perdido, termina el juego. Si no, pide al jugador que ingrese una acción, una fila y una columna nuevamente.
-    """
+
     tablero = generar_tablero()
     celdas_reveladas = set()
     celdas_marcadas = set()
     terminar_juego = False
 
-    while terminar_juego:
+    while terminar_juego is False:
 
-        imprimir_tablero_oculto(tablero)
-
+        print(imprimir_tablero_oculto(tablero, celdas_marcadas))
         accion, fila, columna = pedir_accion()
 
         if accion == "R":
-            celda_con_mina = not revelar_celda(tablero, celdas_reveladas, celdas_marcadas, fila, columna)
+            celdas_reveladas, tablero, celda_con_mina = revelar_celda(tablero, celdas_reveladas, fila, columna)
 
-            if celda_con_mina is True:
+            if (not celda_con_mina) is True:
                 print("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Oh no! ¡Has pisado una mina!!!!!!!!!!!!!!!!!!!!!")
-                imprimir_tablero(tablero)
+                print(imprimir_tablero(tablero))
                 terminar_juego = True
-            elif verificar_victoria(tablero, celdas_reveladas):
+            if verificar_victoria(tablero, celdas_reveladas) is True:
                 print("¡Felicidades! ¡Has ganado el juego!")
-                imprimir_tablero(tablero)
+                print(imprimir_tablero(tablero))
                 terminar_juego = True
         elif accion == "M":
-            marcar_celda(tablero, celdas_marcadas, fila, columna)
+            tablero, celdas_marcadas = marcar_celda(tablero, celdas_marcadas, fila, columna)
+
 
 if __name__ == "__main__":
     """
