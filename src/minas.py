@@ -1,12 +1,18 @@
 """
-Este ejercicio es una excelente manera de evaluar y mejorar las habilidades de programación de los contenidos que llevamos hasta ahora, enfocándose en las estructuras de datos y el manejo de lógica básica en Python.
-En esta solución, se ha estructurado el código para que sea claro y fácil de seguir. Cada función tiene una responsabilidad específica, lo que hace que el código sea más legible y mantenible. Además, se han utilizado constantes para mejorar la comprensión del código y evitar el uso de "números mágicos" o cadenas de texto repetidas.
+Este ejercicio es una excelente manera de evaluar y mejorar las habilidades de programación de los contenidos que
+llevamos hasta ahora, enfocándose en las estructuras de datos y el manejo de lógica básica en Python.
+En esta solución, se ha estructurado el código para que sea claro y fácil de seguir. Cada función tiene una
+responsabilidad específica, lo que hace que el código sea más legible y mantenible. Además, se han utilizado constantes
+para mejorar la comprensión del código y evitar el uso de "números mágicos" o cadenas de texto repetidas.
 
-El ejercicio consiste en hacer funcionar el programa resolviendo los problemas que tiene el código. Para ello, se han añadido comentarios con TODOs que indican qué hay que hacer en cada caso. Además, se han añadido consejos para ayudarte a resolver los problemas.
+El ejercicio consiste en hacer funcionar el programa resolviendo los problemas que tiene el código. Para ello, se han
+añadido comentarios con TODOs que indican qué hay que hacer en cada caso. Además, se han añadido consejos para ayudarte
+a resolver los problemas.
 
 Notas importantes que te ayudarán a resolver el ejercicio
 
-- Este código asume un nivel básico de interacción en la consola y no incluye validación exhaustiva de errores de usuario. No obstante, tu deberías asegurarte de que cualquier error es manejado correctamente.
+- Este código asume un nivel básico de interacción en la consola y no incluye validación exhaustiva de errores de
+usuario. No obstante, tú deberías asegurarte de que cualquier error es manejado correctamente.
 
 - Desarrollar la función colocar_minas que tiene la siguiente descripción:
 
