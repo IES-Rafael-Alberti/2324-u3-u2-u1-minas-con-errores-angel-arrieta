@@ -70,7 +70,6 @@ NUMERO_MINAS = 10
 VACIO = " "
 MINA = "*"
 BANDERA = "F"
-VALOR_CELDA_DEFECTO = "."
 
 
 def generar_tablero() -> list:
