@@ -140,7 +140,7 @@ def imprimir_tablero(tablero: list) -> str:
     for i in range(cantidad_filas_y_columnas):
         fila = " ".join(tablero[i])
         impresion_tablero += f" {i+1} {fila}\n"
-    return impresion_tablero[:-1]
+    return impresion_tablero
 
 
 def imprimir_tablero_oculto(tablero, celdas_marcadas):
