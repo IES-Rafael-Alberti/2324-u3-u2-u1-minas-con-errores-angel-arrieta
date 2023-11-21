@@ -1,25 +1,4 @@
-"""
-@pytest.mark.parametrize(
-    "inMensaje, outMensaje",
-    [
-        ("Entrada1", "Salida1"),
-        ("Entrada2", "Salida2")
-    ]
-)
-def test_function(inMensaje, outMensaje):
-    assert function(inMensaje) == outMensaje
 
-[
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "]
-]
-"""
 import pytest
 from src.minas import contar_minas_adyacentes, imprimir_tablero, imprimir_tablero_oculto, revelar_celda
 from src.minas import revelar_celdas_vacias, contar_celdas_reveladas, revelar_alrededor, marcar_celda
