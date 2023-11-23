@@ -70,7 +70,7 @@ COLUMNAS = 8
 NUMERO_MINAS = 10
 
 # Representación del tablero
-VACIO = " "
+VACIO = "·"
 MINA = "*"
 BANDERA = "F"
 
