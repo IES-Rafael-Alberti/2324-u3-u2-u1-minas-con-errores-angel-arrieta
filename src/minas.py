@@ -75,7 +75,7 @@ MINA = "*"
 BANDERA = "F"
 
 
-def generar_tablero() -> list:
+def generar_tablero() -> list:  # Genera el tablero con las minas puestas
     """
     Esta función genera un tablero de juego vacío y coloca las minas en el tablero. Luego, calcula el número de minas adyacentes a cada celda.
     :return tablero: matriz que actua como tablero de juego del busca minas
@@ -129,7 +129,7 @@ def contar_minas_adyacentes(tablero, fila, columna):
     return conteo_minas
 
 
-def imprimir_tablero(tablero: list) -> str:
+def imprimir_tablero(tablero: list) -> str:  # Dibuja el tablero qeu se le pasa
     """
     Esta función toma el tablero como argumento e imprime cada celda del tablero.
     :param tablero: tablero de juego
@@ -143,9 +143,11 @@ def imprimir_tablero(tablero: list) -> str:
     return impresion_tablero
 
 
+# Primero oculta las minas y le pase el tablero a imprimir_tablero
 def imprimir_tablero_oculto(tablero, celdas_marcadas):
     """
-    Imprime cada celda del tablero: si la celda ha sido revelada o marcada con una bandera, muestra su contenido actual (número, vacio_revelado o bandera); si no, muestra la celda como vacía.
+    Imprime cada celda del tablero: si la celda ha sido revelada o marcada con una bandera, muestra su contenido actual
+    (número, vacio_revelado o bandera); si no, muestra la celda como vacía.
     :param tablero: tablero de juego
     :param celdas_marcadas: celdas con banderas puestas
     :return impresion_oculta: dibujo del tablero sin las minas
@@ -209,7 +211,8 @@ def revelar_celda(tablero, celdas_reveladas, fila, columna) -> tuple:
 
 def revelar_celdas_vacias(tablero, celdas_reveladas, fila, columna):
     """
-    Esta función revela la celda seleccionada. Si está vacía, revela recursivamente las celdas vacías adyacentes a la celda seleccionada.
+    Esta función revela la celda seleccionada. Si está vacía, revela recursivamente las celdas vacías adyacentes a la
+    celda seleccionada.
     :param tablero: tablero de juego
     :param celdas_reveladas: conjunto de celdas que ya han sido mostradas al jugador
     :param fila: fila de la celda seleccionada
@@ -300,18 +303,18 @@ def jugar():
     terminar_juego = False
 
     while terminar_juego is False:
-
-        print(imprimir_tablero_oculto(tablero, celdas_marcadas))
+        print(imprimir_tablero_oculto(tablero, celdas_marcadas))  # Imprimir tablero sin que se vean las minas
         accion, fila, columna = pedir_accion()
 
         if accion == "R":
+            # Revelar celda
             celdas_reveladas, tablero, celda_con_mina = revelar_celda(tablero, celdas_reveladas, fila, columna)
 
-            if (not celda_con_mina) is True:
+            if (not celda_con_mina) is True:  # Verificar si has pisado una mina
                 print("¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡Oh no! ¡Has pisado una mina!!!!!!!!!!!!!!!!!!!!!")
                 print(imprimir_tablero(tablero))
                 terminar_juego = True
-            if verificar_victoria(len(tablero), len(celdas_reveladas)) is True:
+            if verificar_victoria(len(tablero), len(celdas_reveladas)) is True:  # Verificar si has terminado
                 print("¡Felicidades! ¡Has ganado el juego!")
                 print(imprimir_tablero(tablero))
                 terminar_juego = True
