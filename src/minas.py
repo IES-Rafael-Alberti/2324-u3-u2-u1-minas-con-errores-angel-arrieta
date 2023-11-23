@@ -223,7 +223,7 @@ def revelar_celdas_vacias(tablero, celdas_reveladas, fila, columna):
         minas_alrededor = contar_minas_adyacentes(tablero, fila, columna)
         tablero[fila][columna] = f"{minas_alrededor}"
         if minas_alrededor == 0:
-            tablero = revelar_alrededor(tablero, fila, columna)
+            tablero = revelar_alrededor(tablero, fila, columna, 0)
         celdas_reveladas = contar_celdas_reveladas(tablero, celdas_reveladas)
     return celdas_reveladas, tablero
 
@@ -243,12 +243,13 @@ def contar_celdas_reveladas(tablero: list, celdas_reveladas: set) -> set:
     return celdas_reveladas
 
 
-def revelar_alrededor(tablero, fila, columna) -> list:
+def revelar_alrededor(tablero, fila, columna, iteracion) -> list:
     """
     Esta función revela las celdas circundantes de una celda que no tiene minas alrededor
     :param tablero: tablero de juego
     :param fila: fila de la celda ya revelada
     :param columna: columna de la celda ya revelada
+    :param iteracion: veces que se ha accedido a la recursividad de la propia funcion
     :return tablero:
     """
     celdas = set()
@@ -260,6 +261,9 @@ def revelar_alrededor(tablero, fila, columna) -> list:
     for lugar in celdas:
         cantidad_minas = contar_minas_adyacentes(tablero, lugar[0], lugar[1])
         tablero[lugar[0]][lugar[1]] = f"{cantidad_minas}"
+        if iteracion < 2:
+            if cantidad_minas == 0:
+                tablero = revelar_alrededor(tablero, lugar[0], lugar[1], iteracion+1)
     return tablero
 
 
